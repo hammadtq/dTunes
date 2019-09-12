@@ -15,6 +15,7 @@ I have used browserify to convert the node based hdwallet and filestorage.js, it
 ![Screenshot 1](./screenshot.png)
 
 # Demo Video
+https://www.youtube.com/watch?v=wHl26KQO1U8&feature=youtu.be
 [<img src="https://img.youtube.com/vi/wHl26KQO1U8/maxresdefault.jpg" width="50%">](https://youtu.be/wHl26KQO1U8)
 
 ## Future Work

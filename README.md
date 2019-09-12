@@ -17,3 +17,9 @@ I have used browserify to convert the node based hdwallet and filestorage.js, it
 # Demo Video
 [<img src="https://img.youtube.com/vi/wHl26KQO1U8/maxresdefault.jpg" width="50%">](https://youtu.be/wHl26KQO1U8)
 
+## Future Work
+
+Demo could not work with MetaMask due to issues with filestorage.js, storing privatekeys in code-base is not a good idea. Need to convert that to MetaMask once we have the issues fixed.
+
+Also, could not complete the "Buy" functionality due to the shortage of time towards the end of the hackathon. This is a pending issue that will be resolved later.
+

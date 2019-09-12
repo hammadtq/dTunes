@@ -31,15 +31,53 @@ window.setupContract = async function(){
 console.log("contract");
   let web3 = new Web3(provider);
   await web3.eth.getAccounts(function(error, userWallets) {
-
 			console.log(userWallets[0]);
 			userWallet = userWallets[0];
 	});
   console.log("userWallet number is"+userWallet);
-  // const contractInstance = new web3.eth.Contract(contract_ABI, contract_address);
-  // console.log(contractInstance);
-  // let entityList = await contractInstance.methods.isEntity(userWallet).call();
-  // return entityList;
+}
+
+
+window.getUserWallet = async function(){
+  let walletAccount = "";
+  let web3 = new Web3(provider);
+  await web3.eth.getAccounts(function(error, userWallets) {
+			console.log(userWallets[0]);
+			walletAccount = userWallets[0];
+	});
+  return walletAccount;
+}
+
+window.getAllAddressesFromContract = async function(){
+  let web3 = new Web3(provider);
+  const contractInstance = new web3.eth.Contract(contract_ABI, contract_address);
+  console.log(contractInstance);
+  var entityList = new Array();
+  //console.log(await contractInstance.methods.entityList(0).call())
+  for (var i = 0; i < 3; i++){
+    entityList.push(await contractInstance.methods.entityList(i).call());
+  }
+
+  return entityList;
+}
+
+window.getAllFilesFromStorage = async function(addresses){
+  var allFiles = new Array();
+  let web3 = new Web3(provider);
+
+  //get filestorage instance
+  let filestorage = new Filestorage(web3, true);
+
+  for (var i = 0; i < addresses.length; i++){
+    console.log(userWallet);
+    //if(addresses[i] != userWallet){
+      let files = await filestorage.listDirectory(
+        addresses[i].substring(2)
+      );
+    //}
+    allFiles.push(files);
+  }
+  return allFiles;
 }
 
 window.uploadFile = async function(){
@@ -73,8 +111,9 @@ window.uploadFile = async function(){
       privateKey
     );
     console.log("File uploaded at" + link);
-    toastr.info("Uploaded file");
-    location.reload();
+    toastr.info("Uploaded the file");
+    getUserFiles();
+    //location.reload();
   };
   reader.readAsArrayBuffer(file);
 
@@ -91,13 +130,10 @@ window.getFiles = async function(){
   //get filestorage instance
   let filestorage = new Filestorage(web3, true);
 
-  //provide your userWallet & private key
-  //let userWallet = "0x8491afbbBF11c37D38C6F88f6DBDAd3c77Add9B7";
   console.log(userWallet.substring(2));
   let files = await filestorage.listDirectory(
     userWallet.substring(2)
   );
-  console.log(files);
   return files;
 }
 
@@ -114,8 +150,13 @@ window.deleteFile = async function(fileName){
   // let privateKey = '[YOUR_PRIVATE_KEY]';
   // let userWallet = "[YOUR_userWallet_ADDRESS]";
 
-  await filestorage.deleteFile(userWallet, fileName, privateKey);
-  location.reload();
+  try{
+    await filestorage.deleteFile(userWallet, fileName, privateKey);
+    getUserFiles();
+  }catch{
+    alert("You are not allowed to delete the file!");
+  }
+
 }
 
 window.downloadFileToDesktop = async function(link) {

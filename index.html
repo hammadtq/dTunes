@@ -263,6 +263,49 @@
                                         <!--end::Portlet-->
                                     </div>
 
+                                    <div class="">
+                                        <!--begin::Portlet-->
+                                        <div class="k-portlet k-portlet--height-fluid k-widget-17">
+                                            <div class="k-portlet__head">
+                                                <div class="k-portlet__head-label">
+                                                    <h3 class="k-portlet__head-title">
+                                                        Other's Music Files
+                                                    </h3>
+                                                </div>
+
+                                            </div>
+                                            <div class="k-portlet__body">
+                                                <div class="k-widget-17" id="allFiles">
+
+
+                                                    <!-- <div class="k-widget-17__item" id="removeThisDiv">
+                                                          <div class="k-widget-17__product" >
+                                                              <div class="k-widget-17__thumb">
+                                                                  <a href="#">
+                                                                      <img src="./images/loading.gif" class="k-widget-17__image" alt="" title="" />
+                                                                  </a>
+                                                              </div>
+                                                              <div class="k-widget-17__product-desc">
+                                                                  <a href="#">
+                                                                      <div class="k-widget-17__title">  </div>
+                                                                  </a>
+                                                              </div>
+                                                          </div>
+
+                                                          <div class="k-widget-17__prices">
+                                                            <div class="k-widget-17__unit"></div>
+                                                            <div class="k-widget-17__total"></div>
+                                                          </div>
+                                                      </div> -->
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <!--end::Portlet-->
+                                    </div>
+
+
                                     <!--end::Row-->
                                     <!--end::Dashboard 4-->
                                 </div>
@@ -448,6 +491,28 @@
           </div>
         </div>
 
+        <!-- Modal for buy Confirmation -->
+        <div class="modal" id="buyModal" tabindex="-1" role="dialog" style="z-index:1000000001;">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalText">Confirmation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body" id="successModalBody" style="word-wrap: break-word;">
+                Do you really want to buy this file?
+              </div>
+              <!-- Modal footer -->
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="modal-btn-yes">Yes</button>
+                <button type="button" class="btn btn-default" id="modal-btn-nah">No</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!--begin:: Toast markup-->
 <div class="toast toast-custom toast-fill fade hide" role="alert" aria-live="assertive" aria-atomic="true" id="k_toast_1">
 	<div class="toast-header">
@@ -553,6 +618,7 @@
               var wallet = "";
               if (wallet == ""){
                 $('#tokenPairClass').html('Please select a wallet');
+                $('#allFiles').html('Please select a wallet');
               }
               //await setupWallets(1);
               getUserFiles = async function(){
@@ -565,6 +631,30 @@
                   $('#removeThisDiv').remove();
                   $('#tokenPairClass').append('<div class="k-widget-17__item"><div class="k-widget-17__product" ><div class="k-widget-17__thumb"><a href="#"><img src="./images/mp3.svg" class="k-widget-17__image" alt="" title="" /></a></div><div class="k-widget-17__product-desc"><a href="#"><div class="k-widget-17__title"> '+fileName+' </div></a></div></div><div class="k-widget-17__prices"><div class="k-widget-17__unit"><button type="button" class="btn btn-primary" id="dwn_'+files[i]["storagePath"]+'" onclick="downloadMe(this.id)">Download</button></div><div class="k-widget-17__total"><button type="button" class="btn btn-danger" id="del_'+files[i]["name"]+'" onclick="deleteMe(this.id)">Delete</button></div></div></div>')
                 })
+              }
+
+              getAllFiles = async function(addresses){
+
+                var files = await getAllFilesFromStorage(addresses);
+                console.log(files);
+                let walletAccount = await getUserWallet();
+                console.log(walletAccount);
+
+                var index = addresses.indexOf(walletAccount);
+                if (index > -1) {
+                    addresses.splice(index, 1);
+                }
+
+                $('#removeThisDiv').remove();
+                for (var i = 0; i< addresses.length - 1; i++){
+                  var file = files[i];
+                  $.each( file, async function( i, item ) {
+                    var fileName = file[i]["name"];
+                    console.log(fileName);
+
+                    $('#allFiles').append('<div class="k-widget-17__item"><div class="k-widget-17__product" ><div class="k-widget-17__thumb"><a href="#"><img src="./images/mp3.svg" class="k-widget-17__image" alt="" title="" /></a></div><div class="k-widget-17__product-desc"><a href="#"><div class="k-widget-17__title"> '+fileName+' </div></a></div></div><div class="k-widget-17__prices"><div class="k-widget-17__unit"><button type="button" class="btn btn-primary" id="dwn_'+file[i]["storagePath"]+'" onclick="buyMe(this.id)">Buy</button></div></div></div>')
+                  })
+                }
               }
 
               // let addressExists = setupContract();
@@ -596,6 +686,30 @@
                 downloadFileToDesktop(item_id.substring(4));
               }
 
+              buyMe = async function(item_id){
+                var fileName = item_id.substring(4);
+                buyConfirm(async function(confirm){
+                  if(confirm){
+                    toastr.info("Buying file...");
+                    //deleteFile(fileName);
+                  }
+                });
+              }
+
+              var buyConfirm = function(callback){
+                  $("#buyModal").modal('show');
+
+                $("#modal-btn-yes").on("click", function(){
+                  callback(true);
+                  $("#buyModal").modal('hide');
+                });
+
+                $("#modal-btn-nah").on("click", function(){
+                  callback(false);
+                  $("#buyModal").modal('hide');
+                });
+              };
+
               var modalConfirm = function(callback){
                   $("#confirmationModal").modal('show');
 
@@ -612,13 +726,21 @@
 
               $("#srcAccounts").change(async function(){
                 wallet = $("#srcAccounts option:selected").text();
-                console.log(wallet);
+
                 if (wallet == "Wallet 1"){
                   await setupWallets(1);
                   getUserFiles();
+                  $('#allFiles').html('<div id="removeThisDiv"><img src="./images/loading.gif" class="k-widget-17__image"/></div>')
+                  var allAddresses = await getAllAddressesFromContract();
+
+                  getAllFiles(allAddresses);
                 }else if (wallet == "Wallet 2") {
                   await setupWallets(2);
                   getUserFiles();
+                  $('#allFiles').html('<div id="removeThisDiv"><img src="./images/loading.gif" class="k-widget-17__image"/></div>')
+                  var allAddresses = await getAllAddressesFromContract();
+
+                  getAllFiles(allAddresses);
                 }else{
                   $('#tokenPairClass').html('Please select a wallet');
                 }

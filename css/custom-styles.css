@@ -1,0 +1,23 @@
+
+#loadMe{
+  z-index:1000000000;
+}
+
+.toast-title{
+  color:white !important;
+}
+
+.toast-success{
+  background-color:#1dc9b7 !important;
+  color:#fff !important;
+}
+
+.toast-info{
+  background-color:#5578eb !important;
+  color:#fff !important;
+}
+
+#minOrderValue {
+  background-color: #ffb822;
+  color: #111111;
+}

@@ -5,7 +5,7 @@ As MetaMask was not working with filestorage.js, I used truffle-hdwallet-provide
 
 I have also written a contract that records the list of addresses that are uploading files to the storage, this list is then fetched to show all files available within the contract.
 
-#Run Demo
+# Run Demo
 
 To run, simply clone the repo and then use 'http-server' command to run the server. Open the given localhost URL in the browser to interact with the project.
 

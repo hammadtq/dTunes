@@ -10,3 +10,6 @@ I have also written a contract that records the list of addresses that are uploa
 To run, simply clone the repo and then use 'http-server' command to run the server. Open the given localhost URL in the browser to interact with the project.
 
 I have used browserify to convert the node based hdwallet and filestorage.js, its static now and this package can be pushed on to IPFS.
+
+## Screenshot
+![Screenshot 1](./screenshots/screenshots.png)

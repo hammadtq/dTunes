@@ -11,5 +11,9 @@ To run, simply clone the repo and then use 'http-server' command to run the serv
 
 I have used browserify to convert the node based hdwallet and filestorage.js, its static now and this package can be pushed on to IPFS.
 
-## Screenshot
+# Screenshot
 ![Screenshot 1](./screenshot.png)
+
+# Demo Video
+[<img src="https://img.youtube.com/vi/wHl26KQO1U8/maxresdefault.jpg" width="50%">](https://youtu.be/wHl26KQO1U8)
+

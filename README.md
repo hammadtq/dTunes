@@ -1,5 +1,5 @@
 # dTunes
- This repository uses SKALE storage and contracts to manage music files
+ This repository uses SKALE storage and contracts to manage music files over IPFS.
 
 As MetaMask was not working with filestorage.js, I used truffle-hdwallet-provider to create 2 wallets and accounts that are used to demo the upload, download and delete functionality of the filestorage.
 
